@@ -1,0 +1,89 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "practice": "Practica",
+    "metronome": "Metronomo",
+    "games": "Juegos",
+    "progress": "Progreso",
+    "chat": "Chat",
+    "settings": "Ajustes"
+  },
+  "home": {
+    "title": "PianoMaster",
+    "subtitle": "Tu tutor personal de piano",
+    "welcome": "Bienvenido a PianoMaster",
+    "startPractice": "Comenzar a practicar",
+    "recentActivity": "Actividad reciente",
+    "noActivity": "Sin actividad reciente"
+  },
+  "practice": {
+    "title": "Practica",
+    "myBooks": "Mis libros",
+    "createBook": "Crear libro",
+    "selectBook": "Seleccionar libro",
+    "currentLesson": "Leccion actual",
+    "generateRoutine": "Generar rutina",
+    "startSession": "Iniciar sesion",
+    "completeExercise": "Completar ejercicio",
+    "routineTitle": "Rutina de hoy",
+    "totalTime": "Tiempo total",
+    "exercises": "Ejercicios",
+    "noBooks": "No hay libros. Crea uno para comenzar.",
+    "bookName": "Nombre del libro",
+    "bookAuthor": "Autor",
+    "bookDescription": "Descripcion",
+    "save": "Guardar",
+    "cancel": "Cancelar"
+  },
+  "metronome": {
+    "title": "Metronomo",
+    "bpm": "BPM",
+    "timeSignature": "Compas",
+    "start": "Iniciar",
+    "stop": "Detener",
+    "tapTempo": "Tocar tempo"
+  },
+  "games": {
+    "title": "Juegos",
+    "noteReading": "Lectura de notas",
+    "rhythm": "Ritmo",
+    "intervals": "Intervalos",
+    "startGame": "Iniciar juego",
+    "score": "Puntuacion",
+    "highScore": "Record",
+    "playAgain": "Jugar de nuevo"
+  },
+  "progress": {
+    "title": "Progreso",
+    "totalTime": "Tiempo total de practica",
+    "lessonsCompleted": "Lecciones completadas",
+    "streak": "Dias de racha",
+    "history": "Historial",
+    "noHistory": "Sin historial de practica"
+  },
+  "chat": {
+    "title": "Chat con el profesor",
+    "placeholder": "Escribe tu mensaje...",
+    "send": "Enviar",
+    "thinking": "Pensando...",
+    "chatError": "Error al enviar mensaje"
+  },
+  "settings": {
+    "title": "Ajustes",
+    "language": "Idioma",
+    "name": "Nombre",
+    "defaultBpm": "BPM predeterminado",
+    "defaultTimeSignature": "Compas predeterminado",
+    "save": "Guardar ajustes",
+    "export": "Exportar datos",
+    "exportSuccess": "Datos exportados exitosamente"
+  },
+  "common": {
+    "minutes": "minutos",
+    "hours": "horas",
+    "days": "dias",
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Exito"
+  }
+}

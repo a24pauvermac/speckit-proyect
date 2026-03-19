@@ -1,0 +1,89 @@
+{
+  "nav": {
+    "home": "Home",
+    "practice": "Practice",
+    "metronome": "Metronome",
+    "games": "Games",
+    "progress": "Progress",
+    "chat": "Chat",
+    "settings": "Settings"
+  },
+  "home": {
+    "title": "PianoMaster",
+    "subtitle": "Your personal piano tutor",
+    "welcome": "Welcome to PianoMaster",
+    "startPractice": "Start practicing",
+    "recentActivity": "Recent activity",
+    "noActivity": "No recent activity"
+  },
+  "practice": {
+    "title": "Practice",
+    "myBooks": "My books",
+    "createBook": "Create book",
+    "selectBook": "Select book",
+    "currentLesson": "Current lesson",
+    "generateRoutine": "Generate routine",
+    "startSession": "Start session",
+    "completeExercise": "Complete exercise",
+    "routineTitle": "Today's routine",
+    "totalTime": "Total time",
+    "exercises": "Exercises",
+    "noBooks": "No books yet. Create one to get started.",
+    "bookName": "Book name",
+    "bookAuthor": "Author",
+    "bookDescription": "Description",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "metronome": {
+    "title": "Metronome",
+    "bpm": "BPM",
+    "timeSignature": "Time signature",
+    "start": "Start",
+    "stop": "Stop",
+    "tapTempo": "Tap tempo"
+  },
+  "games": {
+    "title": "Games",
+    "noteReading": "Note reading",
+    "rhythm": "Rhythm",
+    "intervals": "Intervals",
+    "startGame": "Start game",
+    "score": "Score",
+    "highScore": "High score",
+    "playAgain": "Play again"
+  },
+  "progress": {
+    "title": "Progress",
+    "totalTime": "Total practice time",
+    "lessonsCompleted": "Lessons completed",
+    "streak": "Day streak",
+    "history": "History",
+    "noHistory": "No practice history"
+  },
+  "chat": {
+    "title": "Chat with teacher",
+    "placeholder": "Type your message...",
+    "send": "Send",
+    "thinking": "Thinking...",
+    "chatError": "Error sending message"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "name": "Name",
+    "defaultBpm": "Default BPM",
+    "defaultTimeSignature": "Default time signature",
+    "save": "Save settings",
+    "export": "Export data",
+    "exportSuccess": "Data exported successfully"
+  },
+  "common": {
+    "minutes": "minutes",
+    "hours": "hours",
+    "days": "days",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  }
+}

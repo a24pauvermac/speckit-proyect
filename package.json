@@ -1,0 +1,29 @@
+{
+  "name": "piano-master",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^7.2.0",
+    "@fortawesome/free-solid-svg-icons": "^7.2.0",
+    "@fortawesome/vue-fontawesome": "^3.1.3",
+    "@google/genai": "^1.45.0",
+    "@google/generative-ai": "^0.24.1",
+    "dexie": "^4.0.4"
+  },
+  "devDependencies": {
+    "@vite-pwa/nuxt": "^1.1.1",
+    "nuxt": "^3.15.4",
+    "sharp": "^0.34.5",
+    "vite": "^5.4.0"
+  }
+}
