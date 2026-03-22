@@ -1,6 +1,6 @@
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-  const { message, history } = body
+  const { message, history, bookContext } = body
 
   if (!message) {
     throw createError({
@@ -19,6 +19,15 @@ export default defineEventHandler(async (event) => {
     })
   }
 
+  let bookContextInfo = ''
+  if (bookContext && (bookContext.name || bookContext.author)) {
+    bookContextInfo = `\n\nThe user is currently studying the following method book:\n- Book: ${bookContext.name || 'Unknown'}\n- Author: ${bookContext.author || 'Unknown'}`
+    if (bookContext.description) {
+      bookContextInfo += `\n- Description: ${bookContext.description}`
+    }
+    bookContextInfo += '\n\nPlease provide advice and guidance specifically related to this book when relevant.'
+  }
+
   const systemMessage = {
     role: 'system',
     content: `You are a professional piano tutor at a prestigious music academy. 
@@ -33,7 +42,7 @@ Guidelines:
 - Never use emojis in responses
 - Always respond in the same language as the user
 - Encourage consistent daily practice
-- Provide technical advice about posture, hand position, dynamics`
+- Provide technical advice about posture, hand position, dynamics${bookContextInfo}`
   }
 
   const messages = [systemMessage]

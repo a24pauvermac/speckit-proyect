@@ -19,7 +19,8 @@ import {
   faEdit,
   faMicrophone,
   faPaperPlane,
-  faWifi
+  faWifi,
+  faSpinner
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
@@ -40,7 +41,8 @@ library.add(
   faEdit,
   faMicrophone,
   faPaperPlane,
-  faWifi
+  faWifi,
+  faSpinner
 )
 
 config.autoAddCss = false

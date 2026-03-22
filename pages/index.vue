@@ -1,47 +1,46 @@
 <template>
   <div class="home-page container">
     <div class="hero">
-      <h1 class="page-title">PianoMaster</h1>
-      <p class="subtitle text-secondary">Tu tutor personal de piano</p>
+      <div class="hero-icon">
+        <img src="/icono piano.png" alt="Piano" class="piano-logo" />
+      </div>
+      <p class="subtitle text-light">Tu tutor personal de piano</p>
       
       <NuxtLink to="/practice" class="btn btn-primary btn-lg">
         Comenzar a practicar
       </NuxtLink>
     </div>
 
-    <div class="stats-section" role="region" aria-label="Estadisticas de practica">
-      <div class="stat-card card">
-        <div class="stat-value" aria-label="Minutos de practica">{{ stats.totalMinutes }}</div>
-        <div class="stat-label text-secondary">minutos de practica</div>
+    <div class="books-section">
+      <h2 class="section-title">Libros recientes</h2>
+      
+      <div v-if="loading" class="loading text-secondary">
+        Cargando...
       </div>
-      <div class="stat-card card">
-        <div class="stat-value" aria-label="Lecciones completadas">{{ stats.lessonsCompleted }}</div>
-        <div class="stat-label text-secondary">Lecciones completadas</div>
-      </div>
-      <div class="stat-card card">
-        <div class="stat-value" aria-label="Dias de racha">{{ stats.streak }}</div>
-        <div class="stat-label text-secondary">Dias de racha</div>
-      </div>
-    </div>
 
-    <div class="quick-actions">
-      <h2 id="actions-heading">Accesos rapidos</h2>
-      <div class="actions-grid" role="list" aria-labelledby="actions-heading">
-        <NuxtLink to="/metronome" class="action-card card" role="listitem">
-          <FontAwesomeIcon icon="stopwatch" aria-hidden="true" class="action-icon" />
-          <span>Metronomo</span>
+      <div v-else-if="books.length === 0" class="empty-state card">
+        <p>No hay libros. Crea uno para comenzar.</p>
+        <NuxtLink to="/practice" class="btn btn-primary">
+          Ir a practica
         </NuxtLink>
-        <NuxtLink to="/games" class="action-card card" role="listitem">
-          <FontAwesomeIcon icon="gamepad" aria-hidden="true" class="action-icon" />
-          <span>Juegos</span>
-        </NuxtLink>
-        <NuxtLink to="/progress" class="action-card card" role="listitem">
-          <FontAwesomeIcon icon="chart-line" aria-hidden="true" class="action-icon" />
-          <span>Progreso</span>
-        </NuxtLink>
-        <NuxtLink to="/chat" class="action-card card" role="listitem">
-          <FontAwesomeIcon icon="comments" aria-hidden="true" class="action-icon" />
-          <span>Chat</span>
+      </div>
+
+      <div v-else class="books-scroll">
+        <NuxtLink 
+          v-for="book in books.slice(0, 3)" 
+          :key="book.id" 
+          :to="`/chat/${book.id}`"
+          class="book-item"
+        >
+          <div class="book-content">
+            <h3 class="book-name">{{ book.name }}</h3>
+            <p class="book-author">{{ book.author || 'Autor desconocido' }}</p>
+          </div>
+          <div class="play-button">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          </div>
         </NuxtLink>
       </div>
     </div>
@@ -49,114 +48,178 @@
 </template>
 
 <script setup>
-import { usePracticeSessions } from '~/composables/usePracticeSessions'
+import { useMethodBooks } from '~/composables/useMethodBooks'
 
-const { getSessionStats, getStreak } = usePracticeSessions()
-
-const stats = ref({
-  totalMinutes: 0,
-  lessonsCompleted: 0,
-  streak: 0
-})
+const { books, loading, fetchBooks } = useMethodBooks()
 
 onMounted(async () => {
-  const sessionStats = await getSessionStats()
-  const streak = await getStreak()
-  stats.value = {
-    totalMinutes: sessionStats.totalMinutes,
-    lessonsCompleted: sessionStats.lessonsCompleted,
-    streak
-  }
+  await fetchBooks()
 })
 </script>
 
 <style scoped>
+.home-page {
+  animation: fadeSlideIn var(--transition-smooth) ease-out;
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .hero {
   text-align: center;
-  padding: var(--spacing-2xl) 0;
+  padding: var(--spacing-xl) 0 var(--spacing-2xl);
 }
 
-.page-title {
-  font-size: 2.5rem;
-  margin-bottom: var(--spacing-sm);
-}
-
-.subtitle {
-  font-size: 1.25rem;
-  margin-bottom: var(--spacing-xl);
-}
-
-.btn-lg {
-  padding: var(--spacing-md) var(--spacing-xl);
-  font-size: 1.1rem;
-}
-
-.stats-section {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-xl);
-}
-
-.stat-card {
-  text-align: center;
-  padding: var(--spacing-lg);
-}
-
-.stat-value {
-  font-size: 2rem;
-  font-weight: 500;
-  margin-bottom: var(--spacing-xs);
-}
-
-.stat-label {
-  font-size: 0.85rem;
-}
-
-.quick-actions h2 {
+.hero-icon {
+  display: flex;
+  justify-content: center;
   margin-bottom: var(--spacing-lg);
 }
 
-.actions-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--spacing-md);
+.piano-logo {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
 }
 
-.action-card {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-  padding: var(--spacing-lg);
-  text-decoration: none;
-  color: var(--color-text);
+.subtitle {
+  font-size: 1.1rem;
+  margin-bottom: var(--spacing-xl);
+  color: var(--color-gray-medium);
+}
+
+.btn-lg {
+  padding: var(--spacing-md) var(--spacing-2xl);
+  font-size: 1rem;
   font-weight: 500;
-  transition: all var(--transition-normal);
 }
 
-.action-card:hover {
+.books-section {
+  margin-top: var(--spacing-xl);
+}
+
+.section-title {
+  font-size: 1.25rem;
+  margin-bottom: var(--spacing-lg);
+}
+
+.loading {
+  text-align: center;
+  padding: var(--spacing-2xl);
+}
+
+.empty-state {
+  text-align: center;
+  padding: var(--spacing-2xl);
+}
+
+.empty-state p {
+  margin-bottom: var(--spacing-lg);
+  font-weight: 300;
+}
+
+.books-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: var(--spacing-xs);
+}
+
+.books-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.books-scroll::-webkit-scrollbar-track {
+  background: var(--color-gray);
+  border-radius: 2px;
+}
+
+.books-scroll::-webkit-scrollbar-thumb {
+  background: var(--color-gray-medium);
+  border-radius: 2px;
+}
+
+.book-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--color-white);
+  border-radius: var(--radius-organic);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  text-decoration: none;
+  transition: all var(--transition-smooth);
+  box-shadow: var(--shadow-soft);
+}
+
+.book-item:hover {
   transform: translateY(-2px);
+  box-shadow: var(--shadow-diffused);
 }
 
-.action-icon {
-  font-size: 1.5rem;
-  width: 40px;
-  height: 40px;
+.book-content {
+  flex: 1;
+}
+
+.book-name {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: var(--spacing-xs);
+  color: var(--color-black);
+}
+
+.book-author {
+  font-size: 0.9rem;
+  font-weight: 300;
+  color: var(--color-gray-medium);
+}
+
+.play-button {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--color-black);
+  color: var(--color-white);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-accent);
-  color: white;
-  border-radius: var(--radius-md);
+  transition: all var(--transition-smooth);
+}
+
+.play-button svg {
+  margin-left: 3px;
+}
+
+.book-item:hover .play-button {
+  transform: scale(1.05);
 }
 
 @media (max-width: 600px) {
-  .stats-section {
-    grid-template-columns: 1fr;
+  .book-item {
+    padding: var(--spacing-md) var(--spacing-lg);
   }
   
-  .actions-grid {
-    grid-template-columns: 1fr;
+  .book-name {
+    font-size: 1rem;
+  }
+  
+  .play-button {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .play-button svg {
+    width: 16px;
+    height: 16px;
   }
 }
 </style>

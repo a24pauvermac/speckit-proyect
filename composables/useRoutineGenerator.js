@@ -1,18 +1,4 @@
-import Dexie from 'dexie'
-
-const db = new Dexie('PianoMasterDB')
-
-db.version(1).stores({
-  userProfiles: '++id, name, language',
-  methodBooks: '++id, name, author, isPreset, createdAt',
-  lessons: '++id, bookId, number',
-  exercises: '++id, lessonId, type',
-  practiceSessions: '++id, date, bookId, lessonId, completed',
-  lessonProgress: '++id, bookId, lessonId',
-  metronomeSettings: '++id',
-  gameRecords: '++id, gameType, playedAt, difficulty',
-  chatMessages: '++id, role, timestamp'
-})
+import { database as db } from './useDatabase.js'
 
 export const useRoutineGenerator = () => {
   const generateRoutine = async (bookId, lessonId, availableMinutes = 30) => {

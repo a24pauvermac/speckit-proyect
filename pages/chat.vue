@@ -1,7 +1,5 @@
 <template>
   <div class="chat-page container">
-    <h1 class="page-title">Chat con el profesor</h1>
-
     <div class="chat-container card">
       <div class="messages" ref="messagesContainer" role="log" aria-live="polite" aria-label="Historial de mensajes">
         <div
@@ -36,11 +34,14 @@
         />
         <button 
           type="submit" 
-          class="btn btn-primary"
+          class="btn btn-primary btn-circle"
           :disabled="isThinking || !inputMessage.trim()"
           aria-label="Enviar mensaje"
         >
-          <FontAwesomeIcon icon="paper-plane" aria-hidden="true" />
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22,2 15,22 11,13 2,9"/>
+          </svg>
         </button>
       </form>
     </div>
@@ -141,12 +142,13 @@ onMounted(async () => {
   flex-direction: column;
   overflow: hidden;
   padding: 0;
+  border-radius: var(--radius-organic);
 }
 
 .messages {
   flex: 1;
   overflow-y: auto;
-  padding: var(--spacing-md);
+  padding: var(--spacing-lg);
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
@@ -154,46 +156,67 @@ onMounted(async () => {
 
 .message {
   max-width: 80%;
-  padding: var(--spacing-md);
-  border-radius: var(--radius-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--radius-organic);
 }
 
 .message.user {
   align-self: flex-end;
-  background-color: var(--color-accent);
-  color: var(--color-bg);
+  background-color: var(--color-black);
+  color: var(--color-white);
 }
 
 .message.assistant {
   align-self: flex-start;
-  background-color: var(--color-bg-secondary);
+  background-color: var(--color-gray);
 }
 
 .message-content {
   word-wrap: break-word;
+  line-height: 1.6;
 }
 
 .message-time {
   font-size: 0.75rem;
   margin-top: var(--spacing-xs);
+  font-weight: 300;
 }
 
 .message.user .message-time {
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: rgba(255, 255, 255, 0.6) !important;
 }
 
 .thinking {
-  color: var(--color-text-secondary);
+  color: var(--color-gray-medium);
+  font-weight: 300;
 }
 
 .chat-input {
   display: flex;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md);
-  border-top: 1px solid var(--color-border);
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  padding-bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom, 0));
+  border-top: 1px solid var(--color-gray);
 }
 
 .chat-input .input {
   flex: 1;
+  border: 2px solid var(--color-gray);
+  border-radius: var(--radius-organic);
+}
+
+.chat-input .input:focus {
+  border-color: var(--color-black);
+}
+
+.btn-circle {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
 }
 </style>

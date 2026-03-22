@@ -175,6 +175,7 @@ export const useDatabase = () => {
   }
 
   return {
+    db,
     getUserProfile,
     createUserProfile,
     updateUserProfile,
@@ -202,3 +203,5 @@ export const useDatabase = () => {
     getAllData
   }
 }
+
+export { db as database }

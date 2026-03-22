@@ -1,66 +1,78 @@
 <template>
-  <div class="metronome-page container">
-    <h1 class="page-title">Metronomo</h1>
+  <div class="metronome-page">
+    <div class="metronome-card">
+      <WavePattern 
+        :pattern-size="60" 
+        stroke-color="rgba(255, 255, 255, 0.1)" 
+        :stroke-width="1"
+      />
+      
+      <div class="metronome-content">
+        <div class="bpm-control">
+          <button class="btn btn-circle" @click="decreaseBpm" aria-label="Disminuir BPM">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14"/>
+            </svg>
+          </button>
+          <div class="bpm-display" role="status" aria-live="polite">
+            <span class="bpm-value">{{ bpm }}</span>
+            <span class="bpm-label">BPM</span>
+          </div>
+          <button class="btn btn-circle" @click="increaseBpm" aria-label="Aumentar BPM">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+          </button>
+        </div>
 
-    <div class="bpm-control">
-      <button class="btn btn-secondary" @click="decreaseBpm" aria-label="Disminuir BPM">-</button>
-      <div class="bpm-display" role="status" aria-live="polite">
-        <span class="bpm-value">{{ bpm }}</span>
-        <span class="bpm-label text-secondary">BPM</span>
-      </div>
-      <button class="btn btn-secondary" @click="increaseBpm" aria-label="Aumentar BPM">+</button>
-    </div>
+        <input 
+          type="range" 
+          v-model="bpm" 
+          min="40" 
+          max="240" 
+          class="bpm-slider"
+          aria-label="Control de BPM"
+        />
 
-    <input 
-      type="range" 
-      v-model="bpm" 
-      min="40" 
-      max="240" 
-      class="bpm-slider"
-      aria-label="Control de BPM"
-    />
+        <div class="time-signature">
+          <div class="time-options" role="group" aria-label="Seleccionar compas">
+            <button
+              v-for="sig in timeSignatures"
+              :key="sig"
+              class="time-btn"
+              :class="{ active: timeSignature === sig }"
+              @click="timeSignature = sig"
+              :aria-pressed="timeSignature === sig"
+            >
+              {{ sig }}
+            </button>
+          </div>
+        </div>
 
-    <div class="time-signature">
-      <label id="timesig-label" class="text-secondary">Compas</label>
-      <div class="time-options" role="group" aria-labelledby="timesig-label">
-        <button
-          v-for="sig in timeSignatures"
-          :key="sig"
-          class="btn"
-          :class="timeSignature === sig ? 'btn-primary' : 'btn-secondary'"
-          @click="timeSignature = sig"
-          :aria-pressed="timeSignature === sig"
+        <div class="beat-visual" role="status" aria-live="polite" aria-label="Indicador de tiempo">
+          <div 
+            v-for="i in getBeatsPerMeasure()" 
+            :key="i"
+            class="beat-dot"
+            :class="{ active: isPlaying && currentBeat === i, accent: i === 1 }"
+            :aria-label="isPlaying && currentBeat === i ? 'Tiempo actual' : 'Tiempo ' + i"
+          ></div>
+        </div>
+
+        <button 
+          class="play-btn" 
+          :class="{ playing: isPlaying }"
+          @click="toggleMetronome"
+          :aria-label="isPlaying ? 'Detener metronomo' : 'Iniciar metronomo'"
         >
-          {{ sig }}
+          <svg v-if="isPlaying" width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="6" y="6" width="12" height="12" rx="2"/>
+          </svg>
+          <svg v-else width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
         </button>
       </div>
-    </div>
-
-    <div class="beat-visual" role="status" aria-live="polite" aria-label="Indicador de tiempo">
-      <div 
-        v-for="i in getBeatsPerMeasure()" 
-        :key="i"
-        class="beat-dot"
-        :class="{ active: isPlaying && currentBeat === i, accent: i === 1 }"
-        :aria-label="isPlaying && currentBeat === i ? 'Tiempo actual' : 'Tiempo ' + i"
-      ></div>
-    </div>
-
-    <div class="controls">
-      <button 
-        class="btn btn-lg" 
-        :class="isPlaying ? 'btn-secondary' : 'btn-primary'"
-        @click="toggleMetronome"
-        :aria-label="isPlaying ? 'Detener metronomo' : 'Iniciar metronomo'"
-      >
-        <FontAwesomeIcon :icon="isPlaying ? 'stop' : 'play'" />
-        {{ isPlaying ? 'Detener' : 'Iniciar' }}
-      </button>
-
-      <button class="btn btn-secondary" @click="tapTempo" aria-label="Detectar tempo">
-        <FontAwesomeIcon icon="microphone" />
-        Tocar tempo
-      </button>
     </div>
   </div>
 </template>
@@ -79,7 +91,6 @@ const currentBeat = ref(0)
 const timeSignatures = ['2/4', '3/4', '4/4', '6/8']
 
 let intervalId = null
-let tapTimes = []
 
 const getBeatsPerMeasure = () => {
   return parseInt(timeSignature.value.split('/')[0])
@@ -141,32 +152,6 @@ const decreaseBpm = () => {
   }
 }
 
-const tapTempo = () => {
-  const now = Date.now()
-  tapTimes.push(now)
-  
-  if (tapTimes.length > 4) {
-    tapTimes.shift()
-  }
-  
-  if (tapTimes.length >= 2) {
-    const intervals = []
-    for (let i = 1; i < tapTimes.length; i++) {
-      intervals.push(tapTimes[i] - tapTimes[i - 1])
-    }
-    const avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length
-    const newBpm = Math.round(60000 / avgInterval)
-    
-    if (newBpm >= 40 && newBpm <= 240) {
-      bpm.value = newBpm
-      if (isPlaying.value) {
-        stop()
-        start()
-      }
-    }
-  }
-}
-
 watch([bpm, timeSignature], async () => {
   await saveMetronomeSettings({
     bpm: bpm.value,
@@ -190,65 +175,138 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+.metronome-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 200px);
+  padding: var(--spacing-md);
+}
+
+.metronome-card {
+  position: relative;
+  background-color: var(--color-black);
+  border-radius: var(--radius-organic);
+  padding: var(--spacing-2xl);
+  overflow: hidden;
+  width: 100%;
+  max-width: 400px;
+}
+
+.metronome-card :deep(.wave-pattern) {
+  opacity: 0.6;
+}
+
+.metronome-content {
+  position: relative;
+  z-index: 1;
+}
+
 .bpm-control {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-lg);
-  margin-bottom: var(--spacing-lg);
+  gap: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
 }
 
 .bpm-display {
   text-align: center;
-  min-width: 100px;
+  min-width: 140px;
 }
 
 .bpm-value {
   display: block;
-  font-size: 3rem;
-  font-weight: 500;
+  font-size: 4rem;
+  font-weight: 700;
   line-height: 1;
+  color: var(--color-white);
 }
 
 .bpm-label {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.btn-circle {
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-white);
+  color: var(--color-black);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-smooth);
+}
+
+.btn-circle:hover {
+  transform: scale(1.05);
+}
+
+.btn-circle:active {
+  transform: scale(0.95);
 }
 
 .bpm-slider {
   width: 100%;
-  max-width: 400px;
   margin: 0 auto var(--spacing-xl);
   display: block;
   height: 8px;
   -webkit-appearance: none;
-  background: var(--color-border);
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 4px;
   outline: none;
 }
 
 .bpm-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 24px;
-  height: 24px;
-  background: var(--color-accent);
+  width: 28px;
+  height: 28px;
+  background: var(--color-white);
   border-radius: 50%;
   cursor: pointer;
+  transition: transform var(--transition-smooth);
+}
+
+.bpm-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
 }
 
 .time-signature {
-  text-align: center;
+  display: flex;
+  justify-content: center;
   margin-bottom: var(--spacing-xl);
-}
-
-.time-signature label {
-  display: block;
-  margin-bottom: var(--spacing-md);
 }
 
 .time-options {
   display: flex;
   gap: var(--spacing-sm);
-  justify-content: center;
+}
+
+.time-btn {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-organic);
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.6);
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-smooth);
+}
+
+.time-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.time-btn.active {
+  background: var(--color-white);
+  color: var(--color-black);
 }
 
 .beat-visual {
@@ -262,27 +320,79 @@ onUnmounted(() => {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background-color: var(--color-border);
-  transition: all var(--transition-fast);
+  background-color: rgba(255, 255, 255, 0.2);
+  transition: all var(--transition-smooth);
 }
 
 .beat-dot.active {
-  background-color: var(--color-accent);
-  transform: scale(1.3);
+  background-color: var(--color-white);
+  transform: scale(1.2);
 }
 
-.beat-dot.accent.active {
-  background-color: var(--color-text);
-}
-
-.controls {
+.play-btn {
   display: flex;
-  gap: var(--spacing-md);
+  align-items: center;
   justify-content: center;
+  width: 72px;
+  height: 72px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: var(--color-white);
+  color: var(--color-black);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-smooth);
 }
 
-.btn-lg {
-  padding: var(--spacing-md) var(--spacing-2xl);
-  font-size: 1.25rem;
+.play-btn:hover {
+  transform: scale(1.05);
+}
+
+.play-btn:active {
+  transform: scale(0.95);
+}
+
+.play-btn.playing {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--color-white);
+}
+
+@media (max-width: 600px) {
+  .metronome-page {
+    min-height: calc(100vh - 160px);
+    padding: var(--spacing-sm);
+  }
+  
+  .metronome-card {
+    padding: var(--spacing-xl);
+  }
+  
+  .bpm-value {
+    font-size: 3rem;
+  }
+  
+  .bpm-control {
+    gap: var(--spacing-lg);
+  }
+  
+  .btn-circle {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .btn-circle svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .play-btn {
+    width: 64px;
+    height: 64px;
+  }
+  
+  .play-btn svg {
+    width: 28px;
+    height: 28px;
+  }
 }
 </style>

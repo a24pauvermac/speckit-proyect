@@ -1,7 +1,5 @@
 <template>
   <div class="settings-page container">
-    <h1 class="page-title">Ajustes</h1>
-
     <div class="settings-form card">
       <div class="form-group">
         <label for="settings-name">Nombre</label>
@@ -49,7 +47,7 @@
       <button class="btn btn-secondary" @click="exportData">
         Exportar datos
       </button>
-      <p v-if="exportSuccess" class="success-message text-secondary">
+      <p v-if="exportSuccess" class="success-message">
         Datos exportados exitosamente
       </p>
     </div>
@@ -120,34 +118,39 @@ onMounted(() => {
 
 <style scoped>
 .settings-form {
-  padding: var(--spacing-lg);
+  padding: var(--spacing-xl);
   margin-bottom: var(--spacing-lg);
 }
 
 .form-group {
-  margin-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
 }
 
 .form-group label {
   display: block;
-  margin-bottom: var(--spacing-xs);
+  margin-bottom: var(--spacing-sm);
   font-weight: 500;
+  font-size: 0.9rem;
 }
 
 .export-section {
-  padding: var(--spacing-lg);
+  padding: var(--spacing-xl);
 }
 
 .export-section h2 {
   margin-bottom: var(--spacing-sm);
+  font-size: 1.25rem;
 }
 
 .export-section p {
-  margin-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  font-weight: 300;
+  line-height: 1.6;
 }
 
 .success-message {
-  margin-top: var(--spacing-md);
-  color: #28a745 !important;
+  margin-top: var(--spacing-lg);
+  font-weight: 500;
+  color: var(--color-black);
 }
 </style>

@@ -1,18 +1,4 @@
-import Dexie from 'dexie'
-
-const db = new Dexie('PianoMasterDB')
-
-db.version(1).stores({
-  userProfiles: '++id, name, language',
-  methodBooks: '++id, name, author, isPreset',
-  lessons: '++id, bookId, number',
-  exercises: '++id, lessonId, type',
-  practiceSessions: '++id, date, bookId, lessonId, completed',
-  lessonProgress: '++id, bookId, lessonId',
-  metronomeSettings: '++id',
-  gameRecords: '++id, gameType, playedAt, difficulty',
-  chatMessages: '++id, role, timestamp'
-})
+import { database as db } from './useDatabase.js'
 
 export const useMethodBooks = () => {
   const books = ref([])
@@ -22,7 +8,11 @@ export const useMethodBooks = () => {
     loading.value = true
     try {
       books.value = await db.methodBooks.toArray()
-      books.value.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
+      books.value.sort((a, b) => {
+        const dateA = a.lastUsedAt ? new Date(a.lastUsedAt) : new Date(a.createdAt || 0)
+        const dateB = b.lastUsedAt ? new Date(b.lastUsedAt) : new Date(b.createdAt || 0)
+        return dateB - dateA
+      })
     } catch (error) {
       console.error('Error fetching books:', error)
     } finally {
@@ -37,7 +27,8 @@ export const useMethodBooks = () => {
   const createBook = async (bookData) => {
     const newBook = {
       ...bookData,
-      createdAt: new Date().toISOString()
+      createdAt: new Date(),
+      lastUsedAt: new Date()
     }
     try {
       const id = await db.methodBooks.add(newBook)
@@ -54,6 +45,11 @@ export const useMethodBooks = () => {
     await fetchBooks()
   }
 
+  const updateLastUsed = async (id) => {
+    await db.methodBooks.update(Number(id), { lastUsedAt: new Date() })
+    await fetchBooks()
+  }
+
   const deleteBook = async (id) => {
     await db.methodBooks.delete(Number(id))
     await db.lessons.where('bookId').equals(Number(id)).delete()
@@ -67,6 +63,7 @@ export const useMethodBooks = () => {
     getBook,
     createBook,
     updateBook,
+    updateLastUsed,
     deleteBook
   }
 }
