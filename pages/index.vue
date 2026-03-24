@@ -11,51 +11,28 @@
       </NuxtLink>
     </div>
 
-    <div class="books-section">
-      <h2 class="section-title">Libros recientes</h2>
+    <div class="chat-section">
+      <h2 class="section-title">Chatea con tu profesor</h2>
       
-      <div v-if="loading" class="loading text-secondary">
-        Cargando...
-      </div>
-
-      <div v-else-if="books.length === 0" class="empty-state card">
-        <p>No hay libros. Crea uno para comenzar.</p>
-        <NuxtLink to="/practice" class="btn btn-primary">
-          Ir a practica
-        </NuxtLink>
-      </div>
-
-      <div v-else class="books-scroll">
-        <NuxtLink 
-          v-for="book in books.slice(0, 3)" 
-          :key="book.id" 
-          :to="`/chat/${book.id}`"
-          class="book-item"
-        >
-          <div class="book-content">
-            <h3 class="book-name">{{ book.name }}</h3>
-            <p class="book-author">{{ book.author || 'Autor desconocido' }}</p>
-          </div>
-          <div class="play-button">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M8 5v14l11-7z"/>
-            </svg>
-          </div>
-        </NuxtLink>
-      </div>
+      <NuxtLink to="/chat" class="chat-button">
+        <div class="chat-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+        </div>
+        <div class="chat-text">
+          <h3>Hablar con el profesor</h3>
+          <p>Tu asistente de piano IA</p>
+        </div>
+        <div class="play-button">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+        </div>
+      </NuxtLink>
     </div>
   </div>
 </template>
-
-<script setup>
-import { useMethodBooks } from '~/composables/useMethodBooks'
-
-const { books, loading, fetchBooks } = useMethodBooks()
-
-onMounted(async () => {
-  await fetchBooks()
-})
-</script>
 
 <style scoped>
 .home-page {
@@ -102,7 +79,7 @@ onMounted(async () => {
   font-weight: 500;
 }
 
-.books-section {
+.chat-section {
   margin-top: var(--spacing-xl);
 }
 
@@ -111,76 +88,52 @@ onMounted(async () => {
   margin-bottom: var(--spacing-lg);
 }
 
-.loading {
-  text-align: center;
-  padding: var(--spacing-2xl);
-}
-
-.empty-state {
-  text-align: center;
-  padding: var(--spacing-2xl);
-}
-
-.empty-state p {
-  margin-bottom: var(--spacing-lg);
-  font-weight: 300;
-}
-
-.books-scroll {
+.chat-button {
   display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-  max-height: 400px;
-  overflow-y: auto;
-  padding-right: var(--spacing-xs);
-}
-
-.books-scroll::-webkit-scrollbar {
-  width: 4px;
-}
-
-.books-scroll::-webkit-scrollbar-track {
-  background: var(--color-gray);
-  border-radius: 2px;
-}
-
-.books-scroll::-webkit-scrollbar-thumb {
-  background: var(--color-gray-medium);
-  border-radius: 2px;
-}
-
-.book-item {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: var(--spacing-lg);
   background-color: var(--color-white);
   border-radius: var(--radius-organic);
-  padding: var(--spacing-lg) var(--spacing-xl);
-  text-decoration: none;
+  padding: var(--spacing-xl);
+  cursor: pointer;
   transition: all var(--transition-smooth);
   box-shadow: var(--shadow-soft);
+  text-decoration: none;
 }
 
-.book-item:hover {
+.chat-button:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-diffused);
 }
 
-.book-content {
+.chat-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-black);
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.chat-text {
   flex: 1;
 }
 
-.book-name {
-  font-size: 1.1rem;
-  font-weight: 500;
+.chat-text h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
   margin-bottom: var(--spacing-xs);
   color: var(--color-black);
 }
 
-.book-author {
+.chat-text p {
   font-size: 0.9rem;
   font-weight: 300;
   color: var(--color-gray-medium);
+  margin: 0;
 }
 
 .play-button {
@@ -193,30 +146,41 @@ onMounted(async () => {
   align-items: center;
   justify-content: center;
   transition: all var(--transition-smooth);
+  flex-shrink: 0;
 }
 
 .play-button svg {
   margin-left: 3px;
 }
 
-.book-item:hover .play-button {
+.chat-button:hover .play-button {
   transform: scale(1.05);
 }
 
 @media (max-width: 600px) {
-  .book-item {
-    padding: var(--spacing-md) var(--spacing-lg);
+  .chat-button {
+    padding: var(--spacing-lg);
   }
-  
-  .book-name {
-    font-size: 1rem;
+
+  .chat-icon {
+    width: 48px;
+    height: 48px;
   }
-  
+
+  .chat-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .chat-text h3 {
+    font-size: 1.1rem;
+  }
+
   .play-button {
     width: 36px;
     height: 36px;
   }
-  
+
   .play-button svg {
     width: 16px;
     height: 16px;

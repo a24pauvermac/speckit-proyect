@@ -7,19 +7,21 @@
     <h1>Ritmo</h1>
     
     <div v-if="!gameStarted" class="start-screen card">
-      <p>Selecciona la dificultad:</p>
+      <h2>Selecciona la dificultad</h2>
+      
       <div class="difficulty-options">
         <button 
           v-for="diff in difficulties" 
           :key="diff"
-          class="btn"
-          :class="selectedDifficulty === diff ? 'btn-primary' : 'btn-secondary'"
+          class="difficulty-btn"
+          :class="selectedDifficulty === diff ? 'active' : ''"
           @click="selectedDifficulty = diff"
         >
-          {{ diff }}
+          <span class="diff-label">{{ diff }}</span>
         </button>
       </div>
-      <button class="btn btn-primary btn-lg mt-lg" @click="startGame">
+      
+      <button class="btn btn-primary btn-lg" @click="startGame">
         Iniciar juego
       </button>
     </div>
@@ -131,21 +133,73 @@ const submitAnswer = async (answer) => {
 
 <style scoped>
 .back-link {
-  display: inline-block;
-  margin-bottom: var(--spacing-md);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
   color: var(--color-text-secondary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.back-link:hover {
+  color: var(--color-black);
+}
+
+h1 {
+  margin-bottom: var(--spacing-xl);
+  font-size: 1.5rem;
 }
 
 .start-screen {
   text-align: center;
-  padding: var(--spacing-xl);
+  padding: var(--spacing-2xl);
+}
+
+.start-screen h2 {
+  font-size: 1.25rem;
+  margin-bottom: var(--spacing-xl);
 }
 
 .difficulty-options {
   display: flex;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-md);
   justify-content: center;
-  margin: var(--spacing-lg) 0;
+  margin: var(--spacing-xl) 0;
+  flex-wrap: wrap;
+}
+
+.difficulty-btn {
+  background: var(--color-white);
+  border: 2px solid var(--color-gray);
+  border-radius: var(--radius-organic);
+  padding: var(--spacing-md) var(--spacing-xl);
+  cursor: pointer;
+  transition: all var(--transition-smooth);
+  text-transform: capitalize;
+  font-weight: 500;
+  font-size: 1rem;
+  min-width: 100px;
+}
+
+.difficulty-btn:hover {
+  border-color: var(--color-black);
+}
+
+.difficulty-btn.active {
+  background: var(--color-black);
+  border-color: var(--color-black);
+  color: var(--color-white);
+}
+
+.diff-label {
+  text-transform: capitalize;
+}
+
+.btn-lg {
+  padding: var(--spacing-md) var(--spacing-2xl);
+  font-size: 1.1rem;
+  font-weight: 500;
 }
 
 .game-stats {
@@ -191,8 +245,17 @@ const submitAnswer = async (answer) => {
   margin-bottom: var(--spacing-lg);
 }
 
-.btn-lg {
-  padding: var(--spacing-md) var(--spacing-xl);
-  font-size: 1.1rem;
+@media (max-width: 600px) {
+  .difficulty-options {
+    flex-direction: column;
+  }
+  
+  .difficulty-btn {
+    width: 100%;
+  }
+  
+  .answer-options {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
